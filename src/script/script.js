@@ -2,12 +2,12 @@ class Calculator {
   constructor() {
     // display variable and holder
     this.expr = [];
-    this.currVal = "";
+    this.currVal = "0";
     this.postExp = [];
     this.prevCalc = 0;
-    this.ops = "+-/*()".split("");
+    this.ops = "+-/*".split("");
     this.numbers = "0123456789".split("");
-    this.lOpen = false; // left parenthesis is open
+    this.lOpen = 0; // left parenthesis is open
 
     // DOM
     this.exprElm = document.querySelector("#exp");
@@ -27,11 +27,14 @@ class Calculator {
     return a / b;
   };
 
+  sqr = (a, b) => a ** b;
+
   updateDisplay = () => {
     // Update the calculator display for the user
-    this.currVal === ""
-      ? (this.currValElm.innerHTML = 0)
-      : (this.currValElm.innerHTML = this.currVal);
+    // this.currVal === ""
+    //   ? (this.currValElm.innerHTML = 0)
+    //   : (this.currValElm.innerHTML = this.currVal);
+    this.currValElm.innerHTML = this.currVal;
 
     this.expr.length === 0
       ? (this.exprElm.innerHTML = "0")
@@ -40,7 +43,7 @@ class Calculator {
 
   updateOnOperate = () => {
     // updates the
-    this.currVal = "";
+    this.currVal = "0";
     this.currValElm.innerHTML = "0";
     this.exprElm.innerHTML = this.expr.join(" ");
   };
@@ -52,7 +55,7 @@ class Calculator {
 
   resetCalc = () => {
     this.expr = [];
-    this.currVal = "";
+    this.currVal = "0";
   };
 
   valuesDecision(val) {
@@ -110,15 +113,15 @@ class Calculator {
           this.expr[0] = "(";
           this.expr.push("");
         }
-        this.lOpen = true;
+        this.lOpen += 1;
         break;
       case "r-paren":
-        if (this.lOpen && this.expr.length >= 3) {
+        if (this.lOpen > 0 && this.expr.length >= 3) {
           this.expr.push(")");
           this.expr.push("");
           this.currVal = "";
         }
-        this.lOpen = false;
+        this.lOpen -= 1;
         break;
       case "sqr":
         break;
@@ -143,7 +146,6 @@ class Calculator {
         this.operate();
         this.updateOnOperate();
         return;
-        break;
       case "back":
         if (this.currVal === "") return;
         this.currVal = this.currVal.slice(0, -1);
@@ -159,6 +161,7 @@ class Calculator {
   }
 
   isNumber(val) {
+    //  test if value can be converted to a number
     return Number.isNaN(parseFloat(val));
   }
 
@@ -167,19 +170,23 @@ class Calculator {
     let val = e.target.id;
 
     // exceptions
-    if (this.currVal === "" && val === "zero") {
+    if (this.currVal === "0" && val === "zero") {
       // Avoid multiple zeros
       return;
     } else if (this.currVal.at(-1) === "." && val === "dot") {
       // Avoid multiple dots
       return;
-    } else if (this.ops.includes(val) && this.ops.includes(this.expr.at(-1))) {
+    } else if (
+      this.ops.includes(val) &&
+      this.ops.includes(this.expr.at(-1)) &&
+      this.currVal === "0"
+    ) {
       // avoid multiple signs
       return;
     } else if (
       this.ops.includes(val) &&
       this.expr.length === 0 &&
-      this.currVal === ""
+      this.currVal === "0"
     ) {
       return;
     }
@@ -195,64 +202,115 @@ class Calculator {
       case "-":
       case "*":
       case "/":
-        if (this.currVal !== "") {
+      case "sqr":
+        if (this.currVal !== "0") {
           this.expr.push(this.currVal);
+        } else if (this.expr.at(-1) === "(") {
+          return;
         }
-        this.expr.push(val);
-        this.currVal = "";
+
+        // Handle Squares
+        if (val === "sqr") {
+          this.expr.push("^");
+          this.expr.push("2");
+        } else this.expr.push(val);
+
+        this.currVal = "0";
         break;
       case "l-paren":
-        if (this.currVal !== "" && !Number.isNaN(parseFloat(this.currVal))) {
+        if (this.currVal !== "0" && this.expr.at(-1) !== "(") {
+          this.expr.push(this.currVal);
           this.expr.push("*");
           this.expr.push("(");
-          this.expr.push("");
-          this.currVal = "";
-        } else if (this.currVal === "" && this.expr.at(-1) === "") {
+          this.currVal = "0";
+        } else if (this.currVal === "0" && this.expr.length === 0) {
           this.expr[0] = "(";
-          this.expr.push("");
+        } else if (
+          this.currVal === "0" &&
+          this.ops.includes(this.expr.at(-1))
+        ) {
+          this.expr.push("(");
+        } else if (this.expr.length === 1 && this.expr.at(-1) !== "(") {
+          this.expr.push("*");
+          this.expr.push("(");
+        } else if (this.expr.at(-1) === "(") {
+          this.expr.push("(");
+        } else if (this.expr.at(-1) === ")") {
+          this.expr.push("*");
+          this.expr.push("(");
         }
-        this.lOpen = true;
+        this.lOpen += 1;
         break;
       case "r-paren":
-        if (this.lOpen && this.expr.length >= 3) {
-          this.expr.push(")");
-          this.expr.push("");
-          this.currVal = "";
+        console.log(this.expr.at(-1));
+
+        if (this.lOpen === 0) {
+          return;
+        } else if (this.currVal === "0" && this.expr.at(-1) === "(") {
+          return;
+        } else if (this.currVal === "0" && this.expr.at(-1) === ")") {
+          return;
+        } else if (
+          !(
+            this.lOpen > 0 &&
+            this.currVal === "0" &&
+            this.numbers.includes(this.expr.at(-1))
+          )
+        ) {
+          this.expr.push(this.currVal);
         }
-        this.lOpen = false;
-        break;
-      case "sqr":
-        break;
-      case "sqrt":
+
+        this.expr.push(")");
+        this.currVal = "0";
+        this.lOpen -= 1;
+
         break;
       case "dot":
         this.currVal += ".";
         break;
       case "del":
         // clear the current val
-        this.currVal = "";
+        this.currVal = "0";
         break;
       case "ac":
         // clear the calculator completely
         this.resetCalc();
         break;
       case "equal":
-        // prevent early equal
-        if (this.currVal === "" && this.ops.includes(this.expr.at(-1))) {
+        //prevent early equal
+        // if (this.currVal === "0" && this.ops.includes(this.expr.at(-1))) {
+        //   return;
+        // } else if (this.currVal !== "0") {
+        //   this.expr.push(this.currVal);
+        // }
+        if (this.expr.length % 2 !== 0 && this.currVal === "0") {
+          this.operate();
+          this.updateOnOperate();
           return;
-        } else if (this.currVal !== "") {
-          this.expr.push(this.currVal);
+        } else if (
+          this.currVal === "0" &&
+          !this.ops.includes(this.expr.at(-1))
+        ) {
+          return;
         }
-
+        this.expr.push(this.currVal);
         this.operate();
         this.updateOnOperate();
         return;
-        break;
       case "back":
-        if (this.currVal === "") return;
-        this.currVal = this.currVal.slice(0, -1);
+        if (this.currVal === "0") return;
+        if (this.currVal.length === 1) {
+          this.currVal = "0";
+        } else {
+          this.currVal = this.currVal.slice(0, -1);
+        }
         break;
       default:
+        if (this.expr.length === 1 && this.expr[0] !== "(") {
+          // cancel exp when prev result is not used
+          this.expr = [];
+          this.updateDisplay();
+        }
         if (this.currVal === "0") {
           this.currVal = val;
           break;
@@ -265,7 +323,7 @@ class Calculator {
     this.updateDisplay();
 
     // show expression -> debugging
-    this.showExpr();
+    // this.showExpr();
   };
 
   postFix = () => {
@@ -273,12 +331,12 @@ class Calculator {
     if (this.expr.length === 0) return null;
 
     // Converts the expression into postfix notation
-    let numbers = "0123456789".split("");
     let opsStack = [];
     let postExp = [];
     let prec = {
       "*": 3,
       "/": 3,
+      "^": 3,
       "+": 2,
       "-": 2,
       "(": 1,
@@ -290,9 +348,9 @@ class Calculator {
       if (!Number.isNaN(parseFloat(this.expr[token]))) {
         postExp.push(parseFloat(this.expr[token]));
       } else if (this.expr[token] === "(") {
-        opsStack.push(this.exp[token]);
+        opsStack.push(this.expr[token]);
       } else if (this.expr[token] === ")") {
-        topToken = opsStack.pop();
+        let topToken = opsStack.pop();
 
         while (topToken !== "(") {
           // get tokens until the left parenthesis is found
@@ -357,6 +415,10 @@ class Calculator {
           break;
         case "/":
           res = this.divide(a, b);
+          stack.push(res);
+          break;
+        case "^":
+          res = this.sqr(a, b);
           stack.push(res);
           break;
       }

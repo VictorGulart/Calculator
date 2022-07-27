@@ -1,52 +1,91 @@
 @import url("./reset.css");
 
-.container{
+body {
+    min-width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(33,37,37);
+}
+
+.container {
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.calc-container{
-    width: 500px;
+.calc-container {
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.6rem;
+    padding: 0.4rem;
+    border: 1px solid rgb(104, 104, 104);
+    border-radius: 1rem;
+    background-color: lightgray;
 }
 
-.display{
+.display {
     display: flex;
     flex-direction: column;
     font-size: larger;
+    border: 1px solid rgb(110, 110, 110);
+    border-radius: 1rem;
+    padding: 0.4rem;
 }
 
-.btns{
+#exp {
+    padding: 0.2rem 0.4rem;
+    align-self: flex-end;
+    font-size: 0.9rem;
+}
+
+#cur-val {
+    padding: 0.4rem;
+    align-self: flex-end;
+}
+
+.btns {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    row-gap: 0.1rem;
+    row-gap: 0.6rem;
     column-gap: 0.1rem;
 }
 
-#back{
+#back {
     grid-column-start: 5;
     grid-column-end: 5;
 }
 
-#zero{
+#zero {
     grid-column-start: 1;
     grid-column-end: span 2;
 }
 
-#equal{
+#equal {
     grid-column-start: 4;
     grid-column-end: span 2;
 }
 
-.num, .ops { 
+.num, .ops {
     text-align: center;
-    border: 1px solid lightgray;
+    border: 1px solid rgb(73, 73, 73);
     padding: 0.6rem;
+    border-radius: 1rem;
 }
 
-.num:hover, .ops:hover{
-    background-color: rgb(209, 209, 209);
+.num:hover, .ops:hover {
+    background-color: rgb(255, 255, 255);
     cursor: pointer;
 }
 
+#del:hover {
+    background-color: rgb(238, 111, 111);
+    color: white;
+}
 
+#ac:hover {
+    background-color: rgb(111, 238, 164);
+    color: white;
+}
