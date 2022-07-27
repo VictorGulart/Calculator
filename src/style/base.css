@@ -1,0 +1,52 @@
+@import url("./reset.css");
+
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calc-container{
+    width: 500px;
+}
+
+.display{
+    display: flex;
+    flex-direction: column;
+    font-size: larger;
+}
+
+.btns{
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    row-gap: 0.1rem;
+    column-gap: 0.1rem;
+}
+
+#back{
+    grid-column-start: 5;
+    grid-column-end: 5;
+}
+
+#zero{
+    grid-column-start: 1;
+    grid-column-end: span 2;
+}
+
+#equal{
+    grid-column-start: 4;
+    grid-column-end: span 2;
+}
+
+.num, .ops { 
+    text-align: center;
+    border: 1px solid lightgray;
+    padding: 0.6rem;
+}
+
+.num:hover, .ops:hover{
+    background-color: rgb(209, 209, 209);
+    cursor: pointer;
+}
+
+

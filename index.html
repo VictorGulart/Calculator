@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <script src="./src/script/script.js" defer></script>
+    <link rel="stylesheet" href="./src/style/base.css">
+</head>
+<body>
+    <section class="container">
+        <article class="calc-container">
+            <div class="display">
+                <label id="exp" for="">0</label>
+                <label id="cur-val" for="">0</label>
+            </div>
+            <div class="btns">
+                <div onclick="calc.handleInput(event)" class="num" id="l-paren">(</div>
+                <div onclick="calc.handleInput(event)" class="num" id="r-paren">)</div>
+                <div onclick="calc.handleInput(event)" class="num" id="sqr">x&#xB2;</div>
+                <div onclick="calc.handleInput(event)" class="num" id="sqrt">&radic;</div>
+                <div onclick="calc.handleInput(event)" class="num" id="back"><=</div>
+
+                <div onclick="calc.handleInput(event)" class="num" id="7">7</div>
+                <div onclick="calc.handleInput(event)" class="num" id="8">8</div>
+                <div onclick="calc.handleInput(event)" class="num" id="9">9</div>
+                <div onclick="calc.handleInput(event)" class="ops" id="del">DEL</div>
+                <div onclick="calc.handleInput(event)" class="ops" id="ac">AC</div>
+
+                <div onclick="calc.handleInput(event)"class="num" id="4">4</div>
+                <div onclick="calc.handleInput(event)"class="num" id="5">5</div>
+                <div onclick="calc.handleInput(event)"class="num" id="6">6</div>
+                <div onclick="calc.handleInput(event)"class="ops" id="*">X</div>
+                <div onclick="calc.handleInput(event)"class="ops" id="/">/</div>
+
+                <div onclick="calc.handleInput(event)" class="num" id="1">1</div>
+                <div onclick="calc.handleInput(event)" class="num" id="2">2</div>
+                <div onclick="calc.handleInput(event)" class="num" id="3">3</div>
+                <div onclick="calc.handleInput(event)" class="ops" id="+">+</div>
+                <div onclick="calc.handleInput(event)" class="ops" id="-">-</div>
+                
+                <div onclick="calc.handleInput(event)" class="num" id="zero">0</div>
+                <div onclick="calc.handleInput(event)" class="ops" id="dot">.</div>
+                <div onclick="calc.handleInput(event)" class="ops" id="equal">=</div>
+            </div>
+        </article>
+    </section>
+    <section>
+        <span id="logs"></span>
+    </section>
+</body>
+</html>
