@@ -33,7 +33,7 @@ class Calculator {
       ? (this.currValElm.innerHTML = 0)
       : (this.currValElm.innerHTML = this.currVal);
 
-    this.expr.length === 1 && this.expr.at(-1) == ""
+    this.expr.length === 0
       ? (this.exprElm.innerHTML = "0")
       : (this.exprElm.innerHTML = this.expr.join(" "));
   };
@@ -51,7 +51,7 @@ class Calculator {
   };
 
   resetCalc = () => {
-    this.expr = [""];
+    this.expr = [];
     this.currVal = "";
   };
 
@@ -167,18 +167,20 @@ class Calculator {
     let val = e.target.id;
 
     // exceptions
-    if (this.expr.at(-1) === "0" && val === "zero") {
+    if (this.currVal === "" && val === "zero") {
       // Avoid multiple zeros
       return;
     } else if (this.currVal.at(-1) === "." && val === "dot") {
       // Avoid multiple dots
       return;
+    } else if (this.ops.includes(val) && this.ops.includes(this.expr.at(-1))) {
+      // avoid multiple signs
+      return;
     } else if (
       this.ops.includes(val) &&
-      this.ops.includes(this.expr.at(-2)) &&
-      !this.numbers.includes(this.expr.at(-1))
+      this.expr.length === 0 &&
+      this.currVal === ""
     ) {
-      // avoid multiple signs
       return;
     }
 
@@ -187,24 +189,16 @@ class Calculator {
       case "zero":
         this.currVal += "0";
         break;
+
+      // Operations
       case "+":
-        this.expr.push(this.currVal);
-        this.expr.push("+");
-        this.currVal = "";
-        break;
       case "-":
-        this.expr.push(this.currVal);
-        this.expr.push("-");
-        this.currVal = "";
-        break;
       case "*":
-        this.expr.push(this.currVal);
-        this.expr.push("*");
-        this.currVal = "";
-        break;
       case "/":
-        this.expr.push(this.currVal);
-        this.expr.push("/");
+        if (this.currVal !== "") {
+          this.expr.push(this.currVal);
+        }
+        this.expr.push(val);
         this.currVal = "";
         break;
       case "l-paren":
@@ -247,7 +241,6 @@ class Calculator {
         if (this.currVal === "" && this.ops.includes(this.expr.at(-1))) {
           return;
         } else if (this.currVal !== "") {
-          console.log("here");
           this.expr.push(this.currVal);
         }
 
@@ -268,14 +261,11 @@ class Calculator {
         break;
     }
 
-    // updated expr array
-    // this.expr.splice(-1, 1, this.currVal);
-
     // update display
     this.updateDisplay();
 
     // show expression -> debugging
-    // this.showExpr();
+    this.showExpr();
   };
 
   postFix = () => {
