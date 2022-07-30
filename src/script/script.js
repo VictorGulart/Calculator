@@ -65,7 +65,6 @@ class Calculator {
 
   handleInput = (val) => {
     // get the id
-
     // exceptions
     if (this.currVal === "0" && val === "zero") {
       // Avoid multiple zeros
@@ -81,13 +80,17 @@ class Calculator {
       // Avoid starting with signs
       return;
     } else if (
-      this.ops.includes(val) &&
+      this.currVal === "0" &&
+      (this.ops.includes(val) || val === "pow2") &&
       this.ops.includes(this.expr.at(-1)) &&
       val !== this.expr.at(-1)
     ) {
       // Change last sign
       this.expr.pop();
-      this.expr.push(val);
+      if (val === "pow2") {
+        this.expr.push("^");
+        this.expr.push(2);
+      } else this.expr.push(val);
       this.updateDisplay();
       return;
     } else if (
@@ -118,11 +121,14 @@ class Calculator {
       case "/":
       case "^":
       case "pow2":
-        if (this.currVal !== "0") {
+        if (val === "^") {
+          this.expr.push(this.currVal);
+        } else if (this.currVal !== "0") {
           this.expr.push(this.currVal);
         } else if (this.expr.at(-1) === "(") {
           return;
         }
+
         if (val === "pow2") {
           // Handle Squares
           this.expr.push("^");
@@ -209,6 +215,7 @@ class Calculator {
         this.expr.push(this.currVal);
         this.operate();
         this.updateOnOperate();
+        this.lOpen = 0;
         return;
       case "backspace":
         if (this.currVal === "0") return;
