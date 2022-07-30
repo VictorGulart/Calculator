@@ -121,7 +121,7 @@ class Calculator {
       case "/":
       case "^":
       case "pow2":
-        if (val === "^") {
+        if (val === "^" && this.currVal !== "0") {
           this.expr.push(this.currVal);
         } else if (this.currVal !== "0") {
           this.expr.push(this.currVal);
